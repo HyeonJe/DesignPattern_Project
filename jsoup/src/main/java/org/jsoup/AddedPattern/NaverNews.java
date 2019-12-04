@@ -46,5 +46,8 @@ public class NaverNews extends DocumentToData {
         System.out.println("\n");
     }
 
+    public Document getDoc(){
+        return this.doc;
+    }
 
 }

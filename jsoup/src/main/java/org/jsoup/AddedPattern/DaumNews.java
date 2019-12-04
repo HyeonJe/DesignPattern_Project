@@ -46,6 +46,10 @@ public class DaumNews extends DocumentToData {
         System.out.println("\n");
     }
 
+    public Document getDoc(){
+        return this.doc;
+    }
+
 
 
 }

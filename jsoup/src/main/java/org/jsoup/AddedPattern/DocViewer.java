@@ -24,9 +24,10 @@ public class DocViewer {
 	JFrame frame = null;
 	JPanel frame_panel = null;
 	JPanel title_panel = null;
+	
 	JTextArea contents_area = null;
-	JScrollPane tag_scroll = null;
-	JList<String> tag_list = null;
+	JList<String> tag_area = null;
+	
 	DocViewer(Document doc){
 		document = doc;
 		frame = new JFrame();
@@ -62,22 +63,22 @@ public class DocViewer {
 		for(int i = 0; i<tags.size(); i++) {
 			hi[i] = tags.get(i);
 		}
-		tag_list = new JList<String>(hi);
+		tag_area = new JList<String>(hi);
 		
+
+		TagSelectionListener tagselectionlistener = new TagSelectionListener();
+		tag_area.addListSelectionListener(tagselectionlistener);
+		frame.add(title_panel, BorderLayout.NORTH);
+		JScrollPane tag_area_scroll = new JScrollPane(tag_area);
+		tag_area_scroll.setPreferredSize(new Dimension(150, 560));
+		frame.add(tag_area_scroll, BorderLayout.WEST);
 		contents_area = new JTextArea();
 		contents_area.setAlignmentX(JTextArea.LEFT_ALIGNMENT);
-		contents_area.setPreferredSize(new Dimension(640, 540));
-		contents_area.append("test string1 123341341324\n");
-		contents_area.append("test string2\n");
-		contents_area.append("test string3\n");
-		JScrollPane scroll = new JScrollPane(tag_list);
-		scroll.setPreferredSize(new Dimension(150, 560));
-		TagSelectionListener tagselectionlistener = new TagSelectionListener();
-		tag_list.addListSelectionListener(tagselectionlistener);
-		frame.add(title_panel, BorderLayout.NORTH);
-		frame.add(scroll, BorderLayout.WEST);
-		frame.add(contents_area);
+		JScrollPane contents_area_scroll = new JScrollPane(contents_area);
+		contents_area_scroll.setPreferredSize(new Dimension(640, 540));
+		frame.add(new JScrollPane(contents_area_scroll));
 		frame.setVisible(true);
+		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -89,7 +90,7 @@ public class DocViewer {
 			Elements elems = document.getAllElements();
 			int id = 1;
 			for (Element e : elems) {
-				if(e.tagName().equals(tag_list.getSelectedValue())) {
+				if(e.tagName().equals(tag_area.getSelectedValue())) {
 					for(int i = 0; i<e.text().length(); i++) {
 						if(e.text().charAt(i) != ' ') {
 							content += Integer.toString(id++) + " : " + e.text() + "\n";		

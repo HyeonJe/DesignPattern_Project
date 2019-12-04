@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,10 +26,8 @@ public class DocViewer {
 	JFrame frame = null;
 	JPanel frame_panel = null;
 	JPanel title_panel = null;
-	
 	JTextArea contents_area = null;
 	JList<String> tag_area = null;
-	
 	DocViewer(Document doc){
 		document = doc;
 		frame = new JFrame();
@@ -44,28 +44,20 @@ public class DocViewer {
 		frame_panel.setLayout(new BorderLayout());
 		frame_panel.add(title_panel);
 		title_panel.setBackground(new Color(255, 255, 255));
-		
-		Elements elems = doc.getAllElements();
-		ArrayList<String> tags = new ArrayList<String>();
+		HashMap<String, String>contents = new HashMap<String, String>();
+		Elements elems = document.getAllElements();
 		for (Element e : elems) {
-			String target = e.tagName();
-			boolean new_tag = true;
-			for (String s : tags) {
-				if(s == target) {
-					new_tag = false;
-				}
-			}
-			if(new_tag) {
-				tags.add(target);
+			if (isGoodText(e.text())) {
+				contents.put(e.tagName(), e.text());
 			}
 		}
-		String[] hi = new String[tags.size()];
-		for(int i = 0; i<tags.size(); i++) {
-			hi[i] = tags.get(i);
+		Set<String> tagSet = contents.keySet();
+		ArrayList<String> tagarraylist = new ArrayList<String>(tagSet);
+		String[] taglist = new String[tagarraylist.size()];
+		for(int i = 0; i<tagarraylist.size(); i++) {
+			taglist[i] = tagarraylist.get(i);
 		}
-		tag_area = new JList<String>(hi);
-		
-
+		tag_area = new JList<String>(taglist);
 		TagSelectionListener tagselectionlistener = new TagSelectionListener();
 		tag_area.addListSelectionListener(tagselectionlistener);
 		frame.add(title_panel, BorderLayout.NORTH);
@@ -80,6 +72,15 @@ public class DocViewer {
 		frame.setVisible(true);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private boolean isGoodText(String target) {
+		for(int i = 0; i<target.length(); i++) {
+			if(target.charAt(i) != ' ') {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private class TagSelectionListener implements ListSelectionListener {

@@ -640,4 +640,13 @@ public class Elements extends ArrayList<Element> {
         return forms;
     }
 
+    public List<String> getAllTags() {
+        List<String> array1 = new ArrayList<String>();
+        TreeSet<String> array2 = new TreeSet<String>(array1);
+        for (Element e : this) {
+            array2.add(e.tagName());
+        }
+        List<String> array3 = new ArrayList<String>(array2);
+        return array3;
+    }
 }
